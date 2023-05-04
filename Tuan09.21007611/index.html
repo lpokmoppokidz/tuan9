@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="bootstrap-4.6.2-dist/bootstrap-4.6.2-dist/css/bootstrap.css">
+    <script src="jquery-3.6.4.js"></script>
+    <script src="bootstrap-4.6.2-dist/bootstrap-4.6.2-dist/js/bootstrap.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            var n =2;
+            // kiem tra ma 
+            function ktrama(){
+                var txtma = $("#txtMa").val();
+                var patten = /^BN-(\d{5})$/; 
+                if(patten.test(txtma)){
+                    $("#tbMa").html("✅");
+                    return true;
+                }else{
+                    $("#tbMa").html("Tên sai!");
+                    return false;
+                }
+            }
+            $("#txtMa").blur(ktrama);
+            function kTraPass(){
+                var txtPass = $("#txtPass").val();
+                if(txtPass.length >=6 ){
+                    $("#tbPass").html("✅");
+                    return true;
+                }else{
+                    $("#tbPass").html("Mật khẩu phải từ 6 kí tự trở lên!")
+                    return false;
+                }
+            }
+            $("#txtPass").blur(kTraPass);
+            function kTraDate(){
+                var txtDate = $("#txtDate").val();
+                if(txtDate == ""){
+                    $("#tbDate").html("* Bắt buộc nhập");
+                    return false;
+                }
+                var day = new Date(txtDate);
+                var today = new Date();
+                today.setDate(today.getDate()); // set 30 ngay: today.setDate(today.getDate() + 30);
+                if(day<=today){
+                    $("#tbDate").html("* Ngày khời hành phải sau ngày hôm hiện tại 1 ngày");
+                    return false;
+                }
+                $("#tbDate").html("✅");
+                return true;
+            }
+            $("#tbDate").change(kTraDate);
+            // tinhs tien dich vu
+            function tongTien(){
+                var a=[];
+                var dv = $.each($("input[name='txtDV']:checked"),function(){
+                    a.push($("this").val());
+                });
+                var tong=0;
+                // console.log(dv.length);
+                for(i=0;i<dv.length;i++){
+                    tong += dv[i].value*1;
+                    console.log(dv[i].value);
+                }
+                console.log(tong);
+                return tong;
+            }
+            $("#btnSave").click(function(e){
+                var ma = $("#txtMa").val();
+                var matKhau = $("#txtPass").val();
+                var ngayKham = $("#txtDate").val();
+                var day1 = ngayKham.split('-');
+                var tong = tongTien();
+                var khoa = $("#txtCK option:selected").val();
+                if(ktrama() && kTraPass() && kTraDate()){
+                    var trnew = "<tr><td>"+ (n++) + "</td><td>" + ma + "</td><td>" + matKhau + "</td><td>" +  + "</td><td>" + tong + "</td><td>" + khoa + "</td></tr>";
+                    $("#tbl").append(trnew);
+                }
+            })
+        })
+    </script>
+    <style>
+        .container{
+            border: 1px solid black;
+        }
+        li{
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <img src="banner2.png" alt="" width="100%">
+            </div>     
+        </div>   
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="nav">
+                    <li><a href="" style="padding-left: 20px;">Trang chủ</a></li>
+                    <li><a href="" style="padding-left: 20px;" data-toggle="modal" data-target="#frmdk">Đặt lịch</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered table-light table-primary table-striped" id="tbl">
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã bệnh nhân</th>
+                        <th>Mật khẩu</th>
+                        <th>Ngày khám</th>
+                        <th>Phụ thu dịch vụ</th>
+                        <th>Chuyên khoa</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>BN-1234</td>
+                        <td>11111</td>
+                        <td>12/08/2020</td>
+                        <td>200000</td>
+                        <td>Ngoại tổng quát</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 border-top border-dark" id="footer">
+                <h4 style="text-align: center;">21007611_trantuankiet</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal -->
+
+    <div class="modal fade" id="frmdk">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>Đặt lịch khám Online</h1>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form action="" class="form">
+                        <div class="form-group">
+                            <label>Mã bệnh nhân</label>
+                            <input type="text" id="txtMa" class="form-control" placeholder="Mã bệnh nhân">
+                            <span id="tbMa" class="text-danger">(*)BN-YYYYY</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="matKhau">Mật khẩu</label>
+                            <input type="password" class="form-control" id="txtPass">
+                            <span id="tbPass" class="text-danger">(*)</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="ngayKham">Ngày Khám</label>
+                            <input type="date" id="txtDate" class="form-control">
+                            <span class="text-danger" id="tbDate">(*)</span>
+                        </div> 
+                        <div class="form-group">
+                            <label for="loai">Loại dịch vụ</label> <br>
+                            <input type="checkbox" name="txtDV" value="500000">Khám bệnh theo yêu cầu
+                            <input type="checkbox" name="txtDV" value="500000">Điều thị ngoại trú
+                            <input type="checkbox" name="txtDV" value="500000">Bác sĩ theo yêu cầu
+                        </div> 
+                        <div class="form-group">
+                            <label for="Khoa">Chuyên khoa</label>
+                            <select id="txtCK" class="form-control">
+                                <option value="Ngoại Tổng Quát">Ngoại tổng quát</option>
+                                <option value="Nhi">Nhi</option>
+                                <option value="Nội tổng quát">Nội tổng quát</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-info btn-submit" id="btnSave">Đặt lịch</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-danger">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
